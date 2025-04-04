@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNews } from "../store/newsSlice";
+import { fetchNews } from "../store/newsSlice.js";
 import NewsCard from "../components/NewsCard.jsx";
 
 const NewsPage = () => {

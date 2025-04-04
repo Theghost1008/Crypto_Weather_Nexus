@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_KEY = process.env.OPEN_WEATHER_API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_OPEN_WEATHER_API_KEY;
 const API_URL = "https://api.openweathermap.org/data/2.5/weather";
 
 export const fetchWeatherData = async (city) => {
@@ -8,7 +8,7 @@ export const fetchWeatherData = async (city) => {
     const response = await axios.get(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching weather data:", error);
-    throw error;
+      console.error("Error fetching weather data:", error);
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch weather");
   }
 };

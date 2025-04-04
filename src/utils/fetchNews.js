@@ -13,3 +13,23 @@ export const fetchNewsData = async () => {
     throw error;
   }
 };
+
+export const fetchNewsWithSearch = async (query = "crypto", limit = 6) => {
+  try {
+    const response = await axios.get(`${API_URL}?apikey=${API_KEY}`, {
+      params: {
+        q: query,
+        language: "en",
+        size: limit
+      }
+    });
+    return response.data.results.map(article => ({
+      ...article,
+      id: article.article_id || Math.random().toString(36).substring(2, 9),
+      date: article.pubDate ? new Date(article.pubDate) : new Date()
+    }));
+  } catch (error) {
+    console.error("Error fetching news data:", error);
+    throw error;
+  }
+};
