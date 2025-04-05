@@ -10,6 +10,16 @@ import {
 import Sidebar from '@/components/Sidebar';
 import { wrapper } from '@/store/store';
 
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async () => {
+    await store.dispatch(fetchNews());
+    return {
+      props: {},
+    };
+  }
+);
+
+
 const NewsDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -25,8 +35,10 @@ const NewsDetails = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    dispatch(fetchNews());
-  }, [dispatch]);
+    if (defaultData.length === 0) {
+      dispatch(fetchNews());
+    }
+  }, [dispatch, defaultData.length]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -232,14 +244,5 @@ const NewsGrid = ({ articles = [] }) => {
     </div>
   );
 };
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async () => {
-    await store.dispatch(fetchNews());
-    return {
-      props: {},
-    };
-  }
-);
 
 export default NewsDetails;

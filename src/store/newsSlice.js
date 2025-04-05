@@ -16,7 +16,7 @@ export const fetchNewsQuery = createAsyncThunk("news/fetchNewsQuery",async(query
 
 const newsSlice = createSlice({
   name: "news",
-  initialState: { data: [],searchData:[], loading: false, error: null,searchQuery:'crypto' },
+  initialState: { defaultData: [],searchData:[], loading: false, error: null,searchQuery:'crypto' },
   reducers: {
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
