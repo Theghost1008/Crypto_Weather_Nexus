@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { fetchWeather } from "@/store/weatherSlice";
+import { fetchDetailedWeather } from "@/store/weatherSlice";
 import WeatherDetailCard from "@/components/WeatherDetailCard";
 import Sidebar from "@/components/Sidebar";
 
 export default function weatherPage(){
     const [city,setCity]= useState("");
     const dispatch = useDispatch();
-    const {data:weather,loading:weatherLoading,error:weatherError} = useSelector((state)=>state.weather);
+    const {data:some,detailedData:weather,loading:weatherLoading,error:weatherError} = useSelector((state)=>state.weather);
     const handleSearch=()=>{
         if(city.trim()!="")
-            dispatch(fetchWeather(city));
+            dispatch(fetchDetailedWeather(city));
     }
 
     return (

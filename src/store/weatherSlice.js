@@ -13,10 +13,22 @@ export const fetchWeather = createAsyncThunk(
   }
 );
 
+export const fetchDetailedWeather = createAsyncThunk(
+  "weather/fetchDetailedWeather",
+  async (city, { rejectWithValue }) => {
+    try {
+      return await fetchWeatherData(city,{rejectWithValue})
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const weatherSlice = createSlice({
   name: "weather",
   initialState: { 
     data: [], 
+    detailedData: [],
     loading: false, 
     error: null 
   },
@@ -24,6 +36,10 @@ const weatherSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchWeather.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDetailedWeather.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -38,7 +54,15 @@ const weatherSlice = createSlice({
           state.data.push({ city, data });
         } 
       })
+      .addCase(fetchDetailedWeather.fulfilled, (state, action) => {
+        state.loading = false;
+        state.detailedData = action.payload;
+      })
       .addCase(fetchWeather.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchDetailedWeather.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
