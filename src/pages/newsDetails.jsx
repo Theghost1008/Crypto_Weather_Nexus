@@ -12,22 +12,29 @@ import { wrapper } from '@/store/store';
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async () => {
-    await store.dispatch(fetchNews());
-    return {
-      props: {},
-    };
+    try {
+      await store.dispatch(fetchNews());
+      return { props: {} };
+    } catch (error) {
+      console.error("SSR Fetch Error:", error);
+      return { 
+        props: { 
+          ssrError: "Failed to load initial news data" 
+        } 
+      };
+    }
   }
 );
 
 
-const NewsDetails = () => {
+const NewsDetails = ({ssrError}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const {
     data = [],
     searchData = [],
     loading = false,
-    error = null,
+    error = ssrError||null,
     searchQuery = 'crypto'
   } = useSelector((state) => state.news);
   
@@ -35,10 +42,10 @@ const NewsDetails = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    if (data.length === 0) {
+    if (data.length === 0 && !loading && !error) {
       dispatch(fetchNews());
     }
-  }, [dispatch, data.length]);
+  }, [dispatch, data.length, loading, error]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -196,7 +203,7 @@ const ArticleDetail = ({ article }) => {
 };
 
 const NewsGrid = ({ articles = [] }) => {
-  const safeArticles = Array.isArray(articles) ? articles : [];
+  const safeArticles = Array.isArray(articles) ? articles.filter(Boolean) : [];
   if (!safeArticles || safeArticles.length === 0) {
     return (
       <div className="text-center py-12">
@@ -214,7 +221,7 @@ const NewsGrid = ({ articles = [] }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {safeArticles.map(article => (
-        <div key={article.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div key={article.id || Math.random()} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
           {article.image_url && (
             <img
               src={article.image_url}
