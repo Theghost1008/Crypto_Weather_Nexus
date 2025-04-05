@@ -24,7 +24,7 @@ const NewsDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const {
-    defaultData = [],
+    data = [],
     searchData = [],
     loading = false,
     error = null,
@@ -35,10 +35,10 @@ const NewsDetails = () => {
   const { id } = router.query;
 
   useEffect(() => {
-    if (defaultData.length === 0) {
+    if (data.length === 0) {
       dispatch(fetchNews());
     }
-  }, [dispatch, defaultData.length]);
+  }, [dispatch, data.length]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -47,8 +47,8 @@ const NewsDetails = () => {
     dispatch(fetchNewsQuery(query));
   };
 
-  const displayData = (searchQuery === 'crypto' ? defaultData : searchData) || [];
-  const currentArticle = id ? displayData.find(article => article.id === id) : null;
+  const displayData = (searchQuery === 'crypto' ? data : searchData) || [];
+  const currentArticle = id ? data.find(article => article.id === id) : null;
 
   if (loading) {
     return (
@@ -193,7 +193,8 @@ const ArticleDetail = ({ article }) => {
 };
 
 const NewsGrid = ({ articles = [] }) => {
-  if (!articles || articles.length === 0) {
+  const safeArticles = Array.isArray(articles) ? articles : [];
+  if (!safeArticles || safeArticles.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="bg-white rounded-xl shadow-md p-8 inline-block">
@@ -209,7 +210,7 @@ const NewsGrid = ({ articles = [] }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {articles.map(article => (
+      {safeArticles.map(article => (
         <div key={article.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
           {article.image_url && (
             <img
