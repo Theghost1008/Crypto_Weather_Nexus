@@ -1,13 +1,13 @@
 export default function WeatherCard({ data }) {
-  const weatherInfo = data?.weather?.[0] || {};
-  const mainInfo = data?.main || {};
+  const weatherInfo = data.data?.weather?.[0] || {};
+  const mainInfo = data.data?.main || {};
   
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">
-            {data?.name || 'Unknown Location'}
+            {data?.city || 'Unknown Location'}
           </h3>
           <p className="text-gray-600 capitalize">
             {weatherInfo.description || 'No description available'}

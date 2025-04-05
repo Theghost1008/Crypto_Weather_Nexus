@@ -4,14 +4,19 @@ import { fetchWeatherData } from "@/utils/fetchWeather";
 export const fetchWeather = createAsyncThunk(
   "weather/fetchWeather",
   async (city, { rejectWithValue }) => {
-    return await fetchWeatherData(city,{ rejectWithValue });
+    try {
+      const data = await fetchWeatherData(city);
+      return { city, data };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
 const weatherSlice = createSlice({
   name: "weather",
   initialState: { 
-    data: null, 
+    data: [], 
     loading: false, 
     error: null 
   },
@@ -24,7 +29,14 @@ const weatherSlice = createSlice({
       })
       .addCase(fetchWeather.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; 
+        const { city, data } = action.payload;
+        const cityIndex = state.data.findIndex(item => item.city === city);
+        
+        if (cityIndex >= 0) {
+          state.data[cityIndex] = { city, data };
+        } else {
+          state.data.push({ city, data });
+        } 
       })
       .addCase(fetchWeather.rejected, (state, action) => {
         state.loading = false;

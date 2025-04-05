@@ -11,12 +11,15 @@ import { fetchNews } from "@/store/newsSlice";
 export default function Dashboard() {
   const dispatch = useDispatch();
 
+  
   const { data: weather, loading: weatherLoading, error: weatherError } = useSelector((state) => state.weather);
   const { data: crypto, loading: cryptoLoading, error: cryptoError } = useSelector((state) => state.crypto);
   const { data: news, loading: newsLoading, error: newsError } = useSelector((state) => state.news);
 
   useEffect(() => {
     dispatch(fetchWeather("Sangli"));
+    dispatch(fetchWeather("Pune"));
+    dispatch(fetchWeather("Nagpur"));
     dispatch(fetchCrypto());
     dispatch(fetchNews());
   }, [dispatch]);
@@ -55,17 +58,32 @@ export default function Dashboard() {
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {weather ? (
-              <WeatherCard data={weather} />
-            ) : (
-              <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-                <p className="text-gray-500 dark:text-gray-400">No weather data available</p>
+            {weatherLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse">
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                </div>
+              ))
+            ) : weatherError ? (
+              <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow col-span-3">
+                <p className="text-red-500 dark:text-red-400">Failed to load weather data</p>
               </div>
+            ) : weather?.length > 0 ? (
+              weather.map((cityWeather, index) => (
+                <WeatherCard key={index} data={cityWeather} />
+              ))
+            ) : (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+                  <p className="text-gray-500 dark:text-gray-400">No weather data available</p>
+                </div>
+              ))
             )}
           </div>
         </section>
 
-        {/* Cryptocurrency Section */}
         <section className="mb-10">
           <h2 className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
             Cryptocurrency Market
@@ -83,7 +101,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* News Section */}
         <section>
           <h2 className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
             Latest Crypto News
