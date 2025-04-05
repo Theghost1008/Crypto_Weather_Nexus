@@ -7,6 +7,7 @@ import {
   setSearchQuery,
   clearSearchResults
 } from '@/store/newsSlice';
+import Sidebar from '@/components/Sidebar';
 
 const NewsDetails = () => {
   const router = useRouter();
@@ -38,76 +39,85 @@ const NewsDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex justify-center items-center min-h-[50vh] flex-1">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
-        <div className="bg-red-100 rounded-lg p-6 max-w-2xl w-full text-center">
-          <p className="text-red-600 font-medium mb-4">Error: {error}</p>
-          <button 
-            onClick={() => searchQuery === 'crypto' ? dispatch(fetchNews()) : dispatch(fetchNewsQuery(searchQuery))}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex flex-col items-center justify-center min-h-[50vh] p-4 flex-1">
+          <div className="bg-red-100 rounded-lg p-6 max-w-2xl w-full text-center">
+            <p className="text-red-600 font-medium mb-4">Error: {error}</p>
+            <button 
+              onClick={() => searchQuery === 'crypto' ? dispatch(fetchNews()) : dispatch(fetchNewsQuery(searchQuery))}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {!currentArticle && (
-        <div className="mb-12 bg-white rounded-xl shadow-md p-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Crypto News Explorer</h1>
-          <form onSubmit={handleSearch} className="mb-6">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={localQuery}
-                onChange={(e) => setLocalQuery(e.target.value)}
-                placeholder="Search crypto news..."
-                className="flex-1 border border-gray-300 rounded-lg px-5 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-black"
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors shadow-md"
-              >
-                Search
-              </button>
+    <div className='flex'>
+      <Sidebar/>
+      <div className="container mx-auto px-4 py-8 flex-1">
+        {!currentArticle && (
+          <div className="mb-12 bg-white rounded-xl shadow-md p-6">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Crypto News Explorer</h1>
+            <form onSubmit={handleSearch} className="mb-6">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={localQuery}
+                  onChange={(e) => setLocalQuery(e.target.value)}
+                  placeholder="Search crypto news..."
+                  className="flex-1 border border-gray-300 rounded-lg px-5 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-black"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors shadow-md"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+            <div className="flex flex-wrap gap-3">
+              {['Bitcoin', 'Ethereum', 'NFT', 'DeFi', 'Blockchain'].map((term) => (
+                <button
+                  key={term}
+                  onClick={() => {
+                    setLocalQuery(term);
+                    dispatch(setSearchQuery(term));
+                    dispatch(fetchNewsQuery(term));
+                  }}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    searchQuery === term
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {term}
+                </button>
+              ))}
             </div>
-          </form>
-          <div className="flex flex-wrap gap-3">
-            {['Bitcoin', 'Ethereum', 'NFT', 'DeFi', 'Blockchain'].map((term) => (
-              <button
-                key={term}
-                onClick={() => {
-                  setLocalQuery(term);
-                  dispatch(setSearchQuery(term));
-                  dispatch(fetchNewsQuery(term));
-                }}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  searchQuery === term
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {term}
-              </button>
-            ))}
           </div>
-        </div>
-      )}
-      {currentArticle ? (
-        <ArticleDetail article={currentArticle} />
-      ) : (
-        <NewsGrid articles={displayData || []} />
-      )}
+        )}
+        {currentArticle ? (
+          <ArticleDetail article={currentArticle} />
+        ) : (
+          <NewsGrid articles={displayData || []} />
+        )}
+      </div>
     </div>
   );
 };
