@@ -95,7 +95,7 @@ const NewsDetails = ({ssrError}) => {
           <div className="mb-12 bg-white rounded-xl shadow-md p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Crypto News Explorer</h1>
             <form onSubmit={handleSearch} className="mb-6">
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <input
                   type="text"
                   value={localQuery}
@@ -105,7 +105,7 @@ const NewsDetails = ({ssrError}) => {
                 />
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors shadow-md"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors shadow-md w-full sm:w-auto"
                 >
                   Search
                 </button>
@@ -219,7 +219,7 @@ const NewsGrid = ({ articles = [] }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center sm:text-left">
       {safeArticles.map(article => (
         <div key={article.id || Math.random()} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
           {article.image_url && (

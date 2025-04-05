@@ -116,7 +116,7 @@ export default function CryptoDetails() {
           <h1 className="text-2xl font-bold mb-4 dark:text-white">Cryptocurrency Search</h1>
           
           <form onSubmit={handleSearch} className="mb-6">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={searchInput}
