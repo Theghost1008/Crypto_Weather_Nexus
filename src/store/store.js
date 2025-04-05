@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { createWrapper } from "next-redux-wrapper";
 import weatherReducer from "./weatherSlice";
 import cryptoReducer from "./cryptoSlice";
 import newsReducer from "./newsSlice";
 import websocketReducer from "./webSocketSlice";
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     weather: weatherReducer,
     crypto: cryptoReducer,
@@ -13,4 +14,7 @@ const store = configureStore({
   },
 });
 
+const makeStore = () => store;
+
+export const wrapper = createWrapper(makeStore);
 export default store;

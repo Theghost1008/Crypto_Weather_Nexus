@@ -8,16 +8,17 @@ import {
   clearSearchResults
 } from '@/store/newsSlice';
 import Sidebar from '@/components/Sidebar';
+import { wrapper } from '@/store/store';
 
 const NewsDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const {
-    defaultData,
-    searchData,
-    loading,
-    error,
-    searchQuery
+    defaultData = [],
+    searchData = [],
+    loading = false,
+    error = null,
+    searchQuery = 'crypto'
   } = useSelector((state) => state.news);
   
   const [localQuery, setLocalQuery] = useState(searchQuery);
@@ -34,8 +35,8 @@ const NewsDetails = () => {
     dispatch(fetchNewsQuery(query));
   };
 
-  const displayData = searchQuery === 'crypto' ? defaultData : searchData;
-  const currentArticle = id ? (displayData || []).find(article => article.id === id) : null;
+  const displayData = (searchQuery === 'crypto' ? defaultData : searchData) || [];
+  const currentArticle = id ? displayData.find(article => article.id === id) : null;
 
   if (loading) {
     return (
@@ -115,7 +116,7 @@ const NewsDetails = () => {
         {currentArticle ? (
           <ArticleDetail article={currentArticle} />
         ) : (
-          <NewsGrid articles={displayData || []} />
+          <NewsGrid articles={displayData} />
         )}
       </div>
     </div>
@@ -179,7 +180,7 @@ const ArticleDetail = ({ article }) => {
   );
 };
 
-const NewsGrid = ({ articles }) => {
+const NewsGrid = ({ articles = [] }) => {
   if (!articles || articles.length === 0) {
     return (
       <div className="text-center py-12">
@@ -231,5 +232,14 @@ const NewsGrid = ({ articles }) => {
     </div>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async () => {
+    await store.dispatch(fetchNews());
+    return {
+      props: {},
+    };
+  }
+);
 
 export default NewsDetails;
