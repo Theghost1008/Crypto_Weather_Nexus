@@ -164,7 +164,10 @@ const ArticleDetail = ({ article }) => {
             alt={article.title}
             className="w-full h-auto max-h-96 object-cover rounded-lg mb-8"
             onError={(e) => {
-              e.target.src = '/news-placeholder.jpg';
+              e.target.onerror = null
+              e.target.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="%23E5E7EB"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%236B7280" font-family="sans-serif" font-size="14">No Image</text></svg>'
+              )}`;
             }}
           />
         )}
@@ -218,7 +221,10 @@ const NewsGrid = ({ articles = [] }) => {
               alt={article.title}
               className="w-full h-48 object-cover"
               onError={(e) => {
-                e.target.src = '/news-placeholder.jpg';
+                e.target.onerror = null
+                e.target.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none"><rect width="200" height="200" fill="%23E5E7EB"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%236B7280" font-family="sans-serif" font-size="14">No Image</text></svg>'
+                )}`;
               }}
             />
           )}
