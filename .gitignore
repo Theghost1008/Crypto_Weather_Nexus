@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+LoginButton.jsx
+AuthContext.jsx
+FavouritesContext.jsx
+auth.js
+db.js
+login.js
+register.js
+add.js
+remove.js
+list.js
+api.js
+login.jsx
+register.jsx
+favorite.jsx
+
